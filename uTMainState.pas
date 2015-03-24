@@ -27,7 +27,7 @@ type
 
 	TMainState = class(TGameState)
 	public
-		constructor create(_network : TNetwork; _map: string; _gold: integer);
+		constructor create(_network : TNetwork; _map: string; _gold: integer; _waveSeed : cardinal);
 		destructor destroy();
 	
 		procedure process(_deltaTime : real); override;
@@ -96,7 +96,7 @@ type
 
 implementation
 
-constructor TMainState.create(_network : TNetwork; _map: string; _gold: integer);
+constructor TMainState.create(_network : TNetwork; _map: string; _gold: integer; _waveSeed : cardinal );
 var i : integer;
 begin
 	inherited create;
@@ -121,7 +121,7 @@ begin
 
 	for i := 0 to 1 do
 	begin
-		minionManager[i] := TMinionManager.create(42);
+		minionManager[i] := TMinionManager.create(_waveSeed);
 		maps[i] := TMap.create(_map+'.map', -0.981+i , -0.79, minionManager[i]);
 		//share required data
 //		minionManager[i].spawn := maps[i].spawn;

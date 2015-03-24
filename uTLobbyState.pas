@@ -28,6 +28,7 @@ type
     texBackground : TTexture;
     Map: string;
     Gold: integer;
+	waveSeed : cardinal;
     Live: integer;
 
   public //Attribute
@@ -136,10 +137,17 @@ var
 s: string;
 i: integer;
 begin
- s:='Map: ' +map+' Gold: '+inttostr(gold);
+	//structure of the message:
+	// <str gold>,<string mapName>, <str waveSeed>, <human readably msg>
+ randomize();
+ waveSeed := Random($00FFFFFF);
+ s:='Map: ' +map+', Gold: '+inttostr(gold) + ', Waveseed: ' + inttostr(waveSeed) + ',';
  for i:= 0 to length(Lan)-1 do
   if select = i then     //Sucht den ausgeählten Client
-     (Network.AskforGame(i, s)); //Übergibt der Lobby die ausgewählte IP
+  begin
+      Network.AskforGame(i, s); //Übergibt der Lobby die ausgewählte IP
+	  break;
+  end;
 end;
 
 procedure TLobbyState.refresh; //Netzwerk wird gescant und neu gerendert.
@@ -163,8 +171,31 @@ begin
 end;
 
 procedure TLobbystate.Receive(_text: string);//Empfangene nachricht verabeiten
+var str : array[0..2] of string;
+var i : integer;
+var beginInd, endInd : integer; 
 begin
- showmessage(_text);
+ //parse the string
+ //init end since begin is set to end
+ endInd := 0;
+ //three params
+ for i := 0 to 2 do
+ begin
+  beginInd := endInd;
+  while(_text[beginInd] <> ':') do inc(beginInd);
+	  //jump over the white space
+	  beginInd := beginInd + 2;
+	  
+	  endInd := beginInd;
+	  //index of the ',', char count is correct
+	  while(_text[endInd] <> ',') do inc(endInd);
+	  
+	  str[i] := Copy(_text, beginInd, endInd - beginInd);
+  end;
+  map := str[0];
+  gold := strtoint(str[1]);
+  waveSeed := strtoint(str[2]);
+// showmessage(_text);
 end;
 
 procedure TLobbystate.Endgame();//Spiel wird beendet
@@ -177,7 +208,7 @@ var
   time : cardinal;
   Main : TMainState;
 begin
-  Main := TMainState.create(Network, map, gold);
+  Main := TMainState.create(Network, map, gold, waveSeed);
   time := GetTickCount;
   while (GetTickCount-time)<5000 do Application.ProcessMessages;
   pushNewState(Main); //Lobbystate geht in den Mainstate über
@@ -185,12 +216,12 @@ end;
 
 procedure TLobbystate.SetMap1();//Map1 wird gesetzt
 begin
-  Map:='Map1';
+  Map:='map1';
 end;
 
 procedure TLobbystate.SetMap2();//Map2 wird gesetzt
 begin
-  Map:='Map2';
+  Map:='map2';
 end;
 
 procedure TLobbystate.SetGold1000();//1000 Gold wird gesetzt

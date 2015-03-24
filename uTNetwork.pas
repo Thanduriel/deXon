@@ -415,7 +415,9 @@ begin
           if InLobby then
             if MessageDlg('Enter drücken, um ein Spiel zu beginnen mit '//Spieler fragen, ob er spielen will
 			   +Socket.RemoteHost+' bei folgenden Parametern: '+Copy(incoming[i], 6, length(incoming[i])-5)+' sonst Esc', mtCustom, mbOKCancel, 0) = 1 then begin
-              try
+              try			  
+			    OnReceive(incoming[i]);
+				
                 Socket.SendText('!yes;');
                 LeaveLobby;                                      //Spiel beginnen
                 InGame:=true;
