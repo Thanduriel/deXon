@@ -27,7 +27,7 @@ type
 
 	TMainState = class(TGameState)
 	public
-		constructor create(_network : TNetwork; _map: string; _gold: integer; _waveSeed : cardinal);
+		constructor create(_network : TNetwork; _map: string; _gold: integer; _waveSeed : cardinal; _sp : boolean = false);
 		destructor destroy();
 	
 		procedure process(_deltaTime : real); override;
@@ -54,6 +54,11 @@ type
 		minionManager : array[0..1] of TMinionManager;
 		
 		comManager : TComManager;
+		
+		//time in s since the game ended
+		gameFinished : real;
+		
+		singlePlayer : boolean;
 		
 		//currently selected tower type to place
 		curTowerType : byte;
@@ -96,7 +101,7 @@ type
 
 implementation
 
-constructor TMainState.create(_network : TNetwork; _map: string; _gold: integer; _waveSeed : cardinal );
+constructor TMainState.create(_network : TNetwork; _map: string; _gold: integer; _waveSeed : cardinal; _sp : boolean );
 var i : integer;
 begin
 	inherited create;
@@ -138,6 +143,11 @@ begin
 	
 	typeX := 2;
 	typeY := 2;
+	
+	singlePlayer := _sp;
+	
+	//0 - still running
+	gameFinished := 0;
 end;
 
 destructor TMainState.destroy();
@@ -190,11 +200,8 @@ begin
 	end;
 	
 	//check winning conditions
-	if Maps[0].base.livepoints <= 0 then
-		finalized:=true;
-
-	if Maps[1].base.livepoints <= 0 then
-		finalized:=true;
+	if(gameFinished > 5.0) then
+		finalize();
     
 	//process players input
 	comManager.process(_deltaTime);
@@ -226,15 +233,17 @@ begin
 
         //show victory/defeat message
 	if Maps[0].base.livepoints <= 0 then
-           begin
-             _renderer.SetZ(1);
-	     _renderer.drawTexture(-0.5,-0.25,texDefeat,0.5,0.25,true);
-           end;
-	if Maps[1].base.livepoints <= 0 then
-           begin
-             _renderer.setZ(1);
-             _renderer.drawTexture(-0.5,-0.25,texVictory,0.5,0.25,true);
-           end;
+	begin
+		_renderer.SetZ(1);
+		_renderer.drawTexture(-0.5,-0.25,texDefeat,0.5,0.25,true);
+		gameFinished := gameFinished + _deltaTime;
+    end;
+	if (Maps[1].base.livepoints <= 0) and (not singlePlayer) then
+	begin
+		_renderer.setZ(1);
+		_renderer.drawTexture(-0.5,-0.25,texVictory,0.5,0.25,true);
+		gameFinished := gameFinished + _deltaTime;
+	end;
 end;
 
 procedure TMainState.mouseUp();

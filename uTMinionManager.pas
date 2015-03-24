@@ -57,7 +57,8 @@ type
     spawnTime : real;
 	spawnCount : integer;
 	
-	//extra minions counter
+	//minions counters
+	standardCount : integer;
 	extraCount : integer;
 	
 	//rng
@@ -163,16 +164,27 @@ procedure TMinionManager.NewWave (_Path: TPath);
 var i, rn, o : integer;
 novalue:boolean;
     value:real;
+	procedure addStd(_minion : TMinion);
+	begin
+		//see add()
+		if(standardCount > high(minions)) then
+		setlength(minions, length(minions) * 2 + 1);
+		
+	minions[standardCount] := _minion;
+	
+	inc(standardCount);
+	end;
 begin
-   //add extra minions (standard)
   value:= sqr(wavenr) * 2 +10;
 
+  standardCount := 0;
+  
   while value >=8 do
   begin
     //search the highest possible minion
 	for i := 0 to MINIONTYPECOUNT - 1 do 
 	begin
-		if( MINIONVALUE[i] >= value ) then break;
+		if( MINIONVALUE[i] <= value ) then break;
 	end;
 	
 	if(MINIONTYPECOUNT = i) then dec(i);
@@ -180,11 +192,11 @@ begin
 	rn := rng.get(i);
 		
 	case rn of
-	  0 : add(TBread.create('noname',false));
-	  1 : add(THerpes.create('noname',false));
-	  2 : add(TEar.create('noname',false));
-	  3 : add(TTurtle.create('noname',false));
-	  4 : add(TKaisersoze.create('B.O.S.S.',false));
+	  0 : addStd(TBread.create('noname',false));
+	  1 : addStd(THerpes.create('noname',false));
+	  2 : addStd(TEar.create('noname',false));
+	  3 : addStd(TTurtle.create('noname',false));
+	  4 : addStd(TKaisersoze.create('B.O.S.S.',false));
 	end;  
 	
 	value := value - MINIONVALUE[i];
@@ -196,7 +208,7 @@ begin
   //instant spawn first minion after the call to newWave
   spawnTime := SPAWNDELAY;
   ready:=false;
-  setlength(minions,length(minions) + extraCount);
+  setlength(minions,standardCount + extraCount);
   
   //put in extraMinions so that they are handled like the regular ones
   //order is preserved
@@ -205,10 +217,11 @@ begin
 	
     spawnCount:=0;
 	//give every minion the current path
-	for i:= 0 to length(minions)-1  do 
+	for i:= 0 to high(minions)  do
 		minions[i].setPath(_path);
 		
 	extraCount := 0;
+	standardCount := 0;
 //  Spawn.start(minions);
 //  Spawn.start(extraMinions);
 end;

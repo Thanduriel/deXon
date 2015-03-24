@@ -18,7 +18,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  uTGameState, uTRenderer, contnrs, uTMenuState, uTTextureManager, uTFactory, uTSoundsystem, uTNetwork, uTParticleManager;
+  uTGameState, uTRenderer, contnrs, uTMenuState, uTMainState,
+  uTTextureManager, uTFactory, uTSoundsystem, uTNetwork, uTParticleManager;
 
 type
   TGame = class(TForm)
@@ -40,6 +41,10 @@ type
 	renderer : TRenderer;
 	
 	network : TNetwork;
+	
+	//a buffer holding all pressed keys
+	keyBuffer : array of char;
+	keyBufferSize : integer;
   public
     procedure run(Sender: TObject; var Done: Boolean);
   end;
@@ -189,9 +194,22 @@ end;
 
 
 procedure TGame.FormKeyPress(Sender: TObject; var Key: Char);
+var devSp : string;
 begin
 	if((key = char(27)) and (gameStates.Count <> 0)) then
+	begin
 		TGameState(gameStates.Peek()).finalize();
+		//reset the keyBuffer
+		keyBufferSize := 0;
+	end;
+	
+	inc(keyBufferSize);
+	if(keyBufferSize > length(keyBuffer)) then setlength(keyBuffer, keyBufferSize * 2 + 1);
+	keyBuffer[keyBufferSize - 1] := Key;
+	devSp := 'devsp';
+	if(CompareMem(@keyBuffer[keyBufferSize - length(devSp)], @devSp[1], length(devSp)) ) then
+		TGameState(gameStates.Peek()).newState := TMainState.create(Network, 'map1', $FFFFFF, 15437, true);
+	
 end;
 
 end.
