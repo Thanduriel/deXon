@@ -23,12 +23,12 @@ uTBread, uTHerpes, uTear, utturtle, utkaisersoze;
 
 const SPAWNDELAY = 1.0;
 
-const MINIONTYPECOUNT = 3;
+const MINIONTYPECOUNT = 5;
 
 const
     MINIONVALUE : array[0..(MINIONTYPECOUNT - 1)] of cardinal =
     (
-      8, 200, 300
+      8, 200, 300, 400, 1000
     ) ;
 
 type
@@ -183,6 +183,8 @@ begin
 	  0 : add(TBread.create('noname',false));
 	  1 : add(THerpes.create('noname',false));
 	  2 : add(TEar.create('noname',false));
+	  3 : add(TTurtle.create('noname',false));
+	  4 : add(TKaisersoze.create('B.O.S.S.',false));
 	end;  
 	
 	value := value - MINIONVALUE[i];
@@ -194,18 +196,13 @@ begin
   //instant spawn first minion after the call to newWave
   spawnTime := SPAWNDELAY;
   ready:=false;
-  setlength(minions,5 + extraCount);
+  setlength(minions,length(minions) + extraCount);
   
   //put in extraMinions so that they are handled like the regular ones
   //order is preserved
   for i := 0 to extraCount - 1 do
 	minions[high(minions) - i] := extraMinions[extraCount - 1 - i];
 	
-  for i:= 0 to 3  do
-    begin
-       minions[i] := TBread.create(inttostr(i), true);
-    end;
-     minions[4] := THerpes.create(inttostr(4), true);
     spawnCount:=0;
 	//give every minion the current path
 	for i:= 0 to length(minions)-1  do 
