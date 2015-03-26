@@ -26,9 +26,9 @@ const SPAWNDELAY = 1.0;
 const MINIONTYPECOUNT = 5;
 
 const
-    MINIONVALUE : array[0..(MINIONTYPECOUNT - 1)] of cardinal =
+    MINIONVALUE : array[0..(MINIONTYPECOUNT)] of cardinal =
     (
-      8, 200, 300, 400, 1000
+      8, 200, 300, 400, 1000, 4294967295
     ) ;
 
 type
@@ -175,19 +175,20 @@ novalue:boolean;
 	inc(standardCount);
 	end;
 begin
-  value:= sqr(wavenr) * 2 +10;
+  inc(WaveNr);
+  value:= sqr(wavenr) * 32 +42;
 
   standardCount := 0;
   
-  while value >=8 do
+  while value >= MINIONVALUE[0] do
   begin
     //search the highest possible minion
 	for i := 0 to MINIONTYPECOUNT - 1 do 
 	begin
-		if( MINIONVALUE[i] <= value ) then break;
+		if( MINIONVALUE[i] > value ) then	break;
 	end;
 	
-	if(MINIONTYPECOUNT = i) then dec(i);
+	dec(i);
 	
 	rn := rng.get(i);
 		
@@ -199,7 +200,7 @@ begin
 	  4 : addStd(TKaisersoze.create('B.O.S.S.',false));
 	end;  
 	
-	value := value - MINIONVALUE[i];
+	value := value - MINIONVALUE[rn];
   end;
 
 

@@ -41,7 +41,7 @@ implementation
 		m_a := m_a xor (m_a shr 17);
 		m_a := m_a xor (m_a shl 5);
 		result := m_a;
-	end;
+	end;a
 	
 	function TRandomGenerator.get(_max : cardinal) : cardinal;
 	begin 

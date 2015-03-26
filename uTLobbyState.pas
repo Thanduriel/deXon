@@ -140,7 +140,7 @@ begin
 	//structure of the message:
 	// <str gold>,<string mapName>, <str waveSeed>, <human readably msg>
  randomize();
- waveSeed := Random($00FFFFFF);
+ waveSeed := Random($80000000-1);
  s:='Map: ' +map+', Gold: '+inttostr(gold) + ', Waveseed: ' + inttostr(waveSeed) + ',';
  for i:= 0 to length(Lan)-1 do
   if select = i then     //Sucht den ausgeählten Client

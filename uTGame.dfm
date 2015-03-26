@@ -4,8 +4,8 @@ object Game: TGame
   Cursor = crNo
   BorderStyle = bsNone
   Caption = 'Form1'
-  ClientHeight = 202
-  ClientWidth = 447
+  ClientHeight = 562
+  ClientWidth = 784
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -672,6 +672,7 @@ object Game: TGame
     000000000000000000000000000000000000FF00000000000000000000000000
     000000000000FF00000000000000000000000000000000000000FF000000}
   OldCreateOrder = False
+  Position = poDesktopCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyPress = FormKeyPress

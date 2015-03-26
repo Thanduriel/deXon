@@ -208,7 +208,10 @@ begin
 	keyBuffer[keyBufferSize - 1] := Key;
 	devSp := 'devsp';
 	if(CompareMem(@keyBuffer[keyBufferSize - length(devSp)], @devSp[1], length(devSp)) ) then
-		TGameState(gameStates.Peek()).newState := TMainState.create(Network, 'map1', $FFFFFF, 15437, true);
+	begin
+		randomize();
+		TGameState(gameStates.Peek()).newState := TMainState.create(Network, 'map1', $FFFFFF, Random($80000000-1), true);
+	end;
 	
 end;
 

@@ -55,6 +55,10 @@ type
 		
 		comManager : TComManager;
 		
+		// 0 - still running
+		// 1 - self
+		// 2 - other
+		winner : integer;
 		//time in s since the game ended
 		gameFinished : real;
 		
@@ -148,6 +152,7 @@ begin
 	
 	//0 - still running
 	gameFinished := 0;
+	winner := 0;
 end;
 
 destructor TMainState.destroy();
@@ -199,6 +204,11 @@ begin
 		end;
 	end;
 	
+	if(winner = 0) then
+	begin
+		if(Maps[0].base.livepoints <= 0 ) then winner := 2
+		else if(Maps[1].base.livepoints <= 0 ) then winner := 1;
+	end;
 	//check winning conditions
 	if(gameFinished > 5.0) then
 		finalize();
@@ -232,13 +242,13 @@ begin
 	_Renderer.Drawtext(0.72, 0.82, 'Leben:' + inttostr(Maps[1].base.livepoints), 0.035);
 
         //show victory/defeat message
-	if Maps[0].base.livepoints <= 0 then
+	if winner = 2 then
 	begin
 		_renderer.SetZ(1);
 		_renderer.drawTexture(-0.5,-0.25,texDefeat,0.5,0.25,true);
 		gameFinished := gameFinished + _deltaTime;
-    end;
-	if (Maps[1].base.livepoints <= 0) and (not singlePlayer) then
+    end
+	else if (winner = 1) and (not singlePlayer) then
 	begin
 		_renderer.setZ(1);
 		_renderer.drawTexture(-0.5,-0.25,texVictory,0.5,0.25,true);
