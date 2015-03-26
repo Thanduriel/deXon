@@ -11,7 +11,8 @@ unit uTFactory;
 
 interface
 
-uses uTMinion, uTTower, uTBread, uTHerpes, uTStandardTower, uTPoisonTower, uTTurminator;
+uses uTMinion, uTTower, uTStandardTower, uTPoisonTower, uTTurminator, uTCityWok,
+	uTBread, uTHerpes, uTear, utturtle, utkaisersoze;
 
 type
 
@@ -31,6 +32,9 @@ begin
 	case _id of
 		10 : result := TBread.create(_name, _default);
 		11 : result := THerpes.create(_name, _default);
+		12 : result := TEar.create(_name, _default);
+		13 : result := TTurtle.create(_name, _default);
+		14 : result := Tkaisersoze.create(_name, _default);
 	end;
 end;
 
@@ -40,6 +44,7 @@ begin
 		128 : result := TStandardTower.create(_x, _y);
 		129 : result := TPoisonTower.create(_x, _y);
 		130 : result := TTurminator.create(_x, _y);
+		131 : result := TCityWok.create(_x, _y);
 	end;
 end;
 

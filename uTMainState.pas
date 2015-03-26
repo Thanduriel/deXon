@@ -117,11 +117,11 @@ begin
     addButton(TGameButton.create(-0.25, 0.8, 0.05, 0.05, tower04 , 'graphics/tower/citywok/citywok'));
 
     //addButton(TGameButton.create(0.75, 0.8, 0.05, 0.05, messages , 'minion'));
-    addButton(TGameButton.create(0.6, 0.8, 0.05, 0.05, minion01 , 'bread'));
-    addButton(TGameButton.create(0.45, 0.8, 0.05, 0.05, minion02 , 'herpes'));
+    addButton(TGameButton.create(0.6, 0.8, 0.05, 0.05, minion05 , 'kaisersoze'));
+    addButton(TGameButton.create(0.45, 0.8, 0.05, 0.05, minion04 , 'turtle'));
     addButton(TGameButton.create(0.3, 0.8, 0.05, 0.05, minion03 , 'ear'));
-    addButton(TGameButton.create(0.15, 0.8, 0.05, 0.05, minion04 , 'kaisersoze'));
-    addButton(TGameButton.create(0, 0.8, 0.05, 0.05, minion05 , 'turtle'));
+    addButton(TGameButton.create(0.15, 0.8, 0.05, 0.05, minion02 , 'herpes'));
+    addButton(TGameButton.create(0, 0.8, 0.05, 0.05, minion01 , 'bread'));
 
 
 	for i := 0 to 1 do
