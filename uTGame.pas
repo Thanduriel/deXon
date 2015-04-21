@@ -19,7 +19,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   uTGameState, uTRenderer, contnrs, uTMenuState, uTMainState,
-  uTTextureManager, uTFactory, uTSoundsystem, uTNetwork, uTParticleManager;
+  uTTextureManager, uTFactory, uTSoundsystem, uTNetwork, uTParticleManager,
+  uTSettingsManager;
 
 type
   TGame = class(TForm)
@@ -141,6 +142,10 @@ begin
 	//factory singleton; does not change it state when used
 	//so the same can be used for multiple sessions
 	g_factory := TFactory.create();
+	
+	//load settings
+	g_settingsManager := TSettingsManager.create( 'settings.txt');
+	g_soundsystem.setVolume(g_settingsManager.getValueInt('soundVolume') / 100);
 
 	gameStates := TStack.create();
 	 
@@ -156,10 +161,15 @@ end;
 
 procedure TGame.FormDestroy(Sender: TObject);
 begin
+	//save settings
+	g_settingsManager.setValue('soundVolume', round(g_soundsystem.getVolume() * 100));
+	
 	//clean up singletons
 	g_textureManager.Free();
 	g_factory.free();
 	g_particleManager.free();
+	g_settingsManager.free();
+	g_soundsystem.free();
 	
 	network.free();
 
